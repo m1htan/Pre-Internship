@@ -1,2 +1,2 @@
-# Pre-Internship
+# Pre-Internship at TLC
 
