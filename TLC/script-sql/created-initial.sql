@@ -64,7 +64,7 @@ GO
 
 --------------------------------------------------------------------
 
--- Tạo bảng stg_barchart_HOQ25_uco_price
+-- Tạo bảng stg_barchart_HON25_uco_price
 IF OBJECT_ID('dbo.stg_barchart_HON25_uco_price','U') IS NOT NULL
     DROP TABLE dbo.stg_barchart_HON25_uco_price;
 GO
@@ -73,7 +73,7 @@ CREATE TABLE dbo.stg_barchart_HON25_uco_price
 (
     timing            DATETIME        NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT           NULL,
+    [open]              FLOAT           NULL,
     high              FLOAT           NULL,
     low               FLOAT           NULL,
     last              FLOAT           NULL,
@@ -86,7 +86,7 @@ CREATE TABLE dbo.stg_barchart_HON25_uco_price
     source_table      NVARCHAR(100)   NOT NULL,
     created_date      DATETIME        NOT NULL,
     snapshot_date     DATE            NOT NULL,
-    snapshot_date_ol  DATE            NOT NULL
+    snapshot_date_oi  DATE            NOT NULL
 );
 GO
 
@@ -100,7 +100,7 @@ CREATE TABLE dbo.stg_barchart_HOQ25_uco_price
 (
     timing            DATETIME        NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT           NULL,
+    [open]              FLOAT           NULL,
     high              FLOAT           NULL,
     low               FLOAT           NULL,
     last              FLOAT           NULL,
@@ -113,7 +113,7 @@ CREATE TABLE dbo.stg_barchart_HOQ25_uco_price
     source_table      NVARCHAR(100)   NOT NULL,
     created_date      DATETIME        NOT NULL,
     snapshot_date     DATE            NOT NULL,
-    snapshot_date_ol  DATE            NOT NULL
+    snapshot_date_oi  DATE            NOT NULL
 );
 GO
 
@@ -125,7 +125,7 @@ CREATE TABLE dbo.stg_barchart_HOU25_uco_price
 (
     timing            DATETIME        NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT           NULL,
+    [open]              FLOAT           NULL,
     high              FLOAT           NULL,
     low               FLOAT           NULL,
     last              FLOAT           NULL,
@@ -138,7 +138,7 @@ CREATE TABLE dbo.stg_barchart_HOU25_uco_price
     source_table      NVARCHAR(100)   NOT NULL,
     created_date      DATETIME        NOT NULL,
     snapshot_date     DATE            NOT NULL,
-    snapshot_date_ol  DATE            NOT NULL
+    snapshot_date_oi  DATE            NOT NULL
 );
 GO
 
@@ -150,7 +150,7 @@ CREATE TABLE dbo.stg_barchart_HOV25_uco_price
 (
     timing            DATETIME        NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT           NULL,
+    [open]              FLOAT           NULL,
     high              FLOAT           NULL,
     low               FLOAT           NULL,
     last              FLOAT           NULL,
@@ -163,7 +163,7 @@ CREATE TABLE dbo.stg_barchart_HOV25_uco_price
     source_table      NVARCHAR(100)   NOT NULL,
     created_date      DATETIME        NOT NULL,
     snapshot_date     DATE            NOT NULL,
-    snapshot_date_ol  DATE            NOT NULL
+    snapshot_date_oi  DATE            NOT NULL
 );
 GO
 
@@ -175,7 +175,7 @@ CREATE TABLE dbo.stg_barchart_HOX25_uco_price
 (
     timing            DATETIME        NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT           NULL,
+    [open]         FLOAT           NULL,
     high              FLOAT           NULL,
     low               FLOAT           NULL,
     last              FLOAT           NULL,
@@ -188,7 +188,7 @@ CREATE TABLE dbo.stg_barchart_HOX25_uco_price
     source_table      NVARCHAR(100)   NOT NULL,
     created_date      DATETIME        NOT NULL,
     snapshot_date     DATE            NOT NULL,
-    snapshot_date_ol  DATE            NOT NULL
+    snapshot_date_oi  DATE            NOT NULL
 );
 GO
 
@@ -200,7 +200,7 @@ CREATE TABLE dbo.stg_barchart_HOZ25_uco_price
 (
     timing            DATETIME        NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT           NULL,
+    [open]              FLOAT           NULL,
     high              FLOAT           NULL,
     low               FLOAT           NULL,
     last              FLOAT           NULL,
@@ -213,7 +213,7 @@ CREATE TABLE dbo.stg_barchart_HOZ25_uco_price
     source_table      NVARCHAR(100)   NOT NULL,
     created_date      DATETIME        NOT NULL,
     snapshot_date     DATE            NOT NULL,
-    snapshot_date_ol  DATE            NOT NULL
+    snapshot_date_oi  DATE            NOT NULL
 );
 GO
 
@@ -228,7 +228,7 @@ CREATE TABLE dbo.stg_barchart_LFN25_uco_price
 (
     timing            DATETIME       NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT          NULL,
+    [open]              FLOAT          NULL,
     high              FLOAT          NULL,
     low               FLOAT          NULL,
     last              FLOAT          NULL,
@@ -240,7 +240,7 @@ CREATE TABLE dbo.stg_barchart_LFN25_uco_price
     source_table      NVARCHAR(100)  NOT NULL,
     created_date      DATETIME       NOT NULL,
     snapshot_date     DATE           NOT NULL,
-    snapshot_date_ol  DATE           NOT NULL
+    snapshot_date_oi  DATE           NOT NULL
 );
 GO
 
@@ -253,7 +253,7 @@ CREATE TABLE dbo.stg_barchart_LFQ25_uco_price
 (
     timing            DATETIME       NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT          NULL,
+    [open]              FLOAT          NULL,
     high              FLOAT          NULL,
     low               FLOAT          NULL,
     last              FLOAT          NULL,
@@ -265,7 +265,7 @@ CREATE TABLE dbo.stg_barchart_LFQ25_uco_price
     source_table      NVARCHAR(100)  NOT NULL,
     created_date      DATETIME       NOT NULL,
     snapshot_date     DATE           NOT NULL,
-    snapshot_date_ol  DATE           NOT NULL
+    snapshot_date_oi  DATE           NOT NULL
 );
 GO
 
@@ -278,7 +278,7 @@ CREATE TABLE dbo.stg_barchart_LFU25_uco_price
 (
     timing            DATETIME       NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT          NULL,
+    [open]              FLOAT          NULL,
     high              FLOAT          NULL,
     low               FLOAT          NULL,
     last              FLOAT          NULL,
@@ -290,7 +290,7 @@ CREATE TABLE dbo.stg_barchart_LFU25_uco_price
     source_table      NVARCHAR(100)  NOT NULL,
     created_date      DATETIME       NOT NULL,
     snapshot_date     DATE           NOT NULL,
-    snapshot_date_ol  DATE           NOT NULL
+    snapshot_date_oi  DATE           NOT NULL
 );
 GO
 
@@ -303,7 +303,7 @@ CREATE TABLE dbo.stg_barchart_LFV25_uco_price
 (
     timing            DATETIME       NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT          NULL,
+    [open]              FLOAT          NULL,
     high              FLOAT          NULL,
     low               FLOAT          NULL,
     last              FLOAT          NULL,
@@ -315,7 +315,7 @@ CREATE TABLE dbo.stg_barchart_LFV25_uco_price
     source_table      NVARCHAR(100)  NOT NULL,
     created_date      DATETIME       NOT NULL,
     snapshot_date     DATE           NOT NULL,
-    snapshot_date_ol  DATE           NOT NULL
+    snapshot_date_oi  DATE           NOT NULL
 );
 GO
 
@@ -328,7 +328,7 @@ CREATE TABLE dbo.stg_barchart_LFX25_uco_price
 (
     timing            DATETIME       NOT NULL,
     contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT          NULL,
+    [open]              FLOAT          NULL,
     high              FLOAT          NULL,
     low               FLOAT          NULL,
     last              FLOAT          NULL,
@@ -340,7 +340,7 @@ CREATE TABLE dbo.stg_barchart_LFX25_uco_price
     source_table      NVARCHAR(100)  NOT NULL,
     created_date      DATETIME       NOT NULL,
     snapshot_date     DATE           NOT NULL,
-    snapshot_date_ol  DATE           NOT NULL
+    snapshot_date_oi  DATE           NOT NULL
 );
 GO
 
@@ -352,8 +352,8 @@ GO
 CREATE TABLE dbo.stg_barchart_LFZ25_uco_price
 (
     timing            DATETIME       NOT NULL,
-    contract          VARCHAR(10)     NULL,
-    prev_open         FLOAT          NULL,
+    contract          VARCHAR(10)    NULL,
+    [open]              FLOAT          NULL,
     high              FLOAT          NULL,
     low               FLOAT          NULL,
     last              FLOAT          NULL,
@@ -365,7 +365,7 @@ CREATE TABLE dbo.stg_barchart_LFZ25_uco_price
     source_table      NVARCHAR(100)  NOT NULL,
     created_date      DATETIME       NOT NULL,
     snapshot_date     DATE           NOT NULL,
-    snapshot_date_ol  DATE           NOT NULL
+    snapshot_date_oi  DATE           NOT NULL
 );
 GO
 
