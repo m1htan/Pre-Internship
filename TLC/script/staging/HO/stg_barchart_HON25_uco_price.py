@@ -72,7 +72,7 @@ def get_expected_contract(table_name: str) -> str:
         raise ValueError(f"Không parse được contract từ {table_name}")
     return m.group(1)
 
-## Hàm chính xử lý dữ liệu ✅
+## Hàm chính xử lý dữ liệu
 def insert_into_staging(source_path, temp_name, table_name, conn_stg, table_admin_da_name, conn_dtm):
     expected_contract = table_name.split('_')[2]
     source_row = 0
