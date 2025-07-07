@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63db39ee-612f-4343-a95e-8442eeee86be" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TLC/config_sql_server/config_sql_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/TLC/config_sql_server/config_sql_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TLC/script/dtm/f_barchart_HO25_uco_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/TLC/script/dtm/f_barchart_HO25_uco_price.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TLC/test/Test_Connection_DB_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/TLC/test/Test_Connection_DB_1.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,34 +36,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.HOQ25.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Test_Connection_DB.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Test_Connection_DB_0.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Test_Connection_DB_1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.__init__.executor&quot;: &quot;Run&quot;,
-    &quot;Python.config.executor&quot;: &quot;Run&quot;,
-    &quot;Python.config_sql_server.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_HON25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_HOQ25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_HOU25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_HOV25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_HOX25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_HOZ25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_LFN25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_LFQ25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_LFU25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_LFV25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_LFX25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.stg_barchart_LFZ25_uco_price.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/minhtan/Documents/GitHub/Pre-Internship/TLC/script/staging/LF&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.HOQ25.executor": "Run",
+    "Python.Test_Connection_DB.executor": "Run",
+    "Python.Test_Connection_DB_0.executor": "Run",
+    "Python.Test_Connection_DB_1.executor": "Run",
+    "Python.__init__.executor": "Run",
+    "Python.config.executor": "Run",
+    "Python.config_sql_server.executor": "Run",
+    "Python.f_barchart_HO25_uco_price.executor": "Run",
+    "Python.stg_barchart_HON25_uco_price.executor": "Run",
+    "Python.stg_barchart_HOQ25_uco_price.executor": "Run",
+    "Python.stg_barchart_HOU25_uco_price.executor": "Run",
+    "Python.stg_barchart_HOV25_uco_price.executor": "Run",
+    "Python.stg_barchart_HOX25_uco_price.executor": "Run",
+    "Python.stg_barchart_HOZ25_uco_price.executor": "Run",
+    "Python.stg_barchart_LFN25_uco_price.executor": "Run",
+    "Python.stg_barchart_LFQ25_uco_price.executor": "Run",
+    "Python.stg_barchart_LFU25_uco_price.executor": "Run",
+    "Python.stg_barchart_LFV25_uco_price.executor": "Run",
+    "Python.stg_barchart_LFX25_uco_price.executor": "Run",
+    "Python.stg_barchart_LFZ25_uco_price.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/minhtan/Documents/GitHub/Pre-Internship/TLC/script/staging/LF"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/TLC/script/staging/LF" />

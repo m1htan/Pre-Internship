@@ -1,71 +1,93 @@
-import os
-import sys
-import csv
-import xlrd
 import pyodbc
-from config import *
-import requests, zipfile
-from io import StringIO
-import pandas as pa
-import datetime
-from datetime import *
-from pandas import DataFrame
-from datetime import datetime
-import shutil
-from pandas.tseries.offsets import BDay
-from TLC.config_sql_server import config_sql_server
-from TLC.config_sql_server.config_sql_server import config_sql_server_ods
+import pandas as pd
 
-DATE_FORMAT = '%Y-%m-%d'
-DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+from TLC.config_sql_server.config_sql_server import config_sql_server_ods, config_sql_server_dtm
 
-## Khởi tạo kết nối DB
-def init_db():
-    conn_dtm = config_sql_server(section='sqlserver_dtm')
+
+def init_db_connections():
+    """
+    Initialize DB connections to ODS and DTM systems.
+    """
     conn_ods = config_sql_server_ods(section='sqlserver_ods')
-    return conn_dtm, conn_ods
+    conn_dtm = config_sql_server_dtm(section='sqlserver_dtm')
+    return conn_ods, conn_dtm
 
-def process_insert_stm_fact(fact, col_dtm, df_dtm, conn_dtm):
+
+def clean_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Convert all missing values (NaN, pd.NA, NaT) to None to be compatible with pyodbc.
+    Round float columns, and specifically round ma_200 and ma_50 columns if present.
+    """
+    df = df.where(pd.notnull(df), None)
+
+    # Round all float columns generally
+    float_cols = [col for col in df.columns if pd.api.types.is_float_dtype(df[col])]
+    for col in float_cols:
+        df[col] = df[col].apply(lambda x: round(x, 2) if x is not None else None)
+
+    # Specifically round ma_200 and ma_50 (in case not detected as float before)
+    for ma_col in ['ma_200', 'ma_50']:
+        if ma_col in df.columns:
+            df[ma_col] = df[ma_col].apply(lambda x: round(x, 2) if x is not None else None)
+
+    return df
+
+
+def insert_to_fact_table(df: pd.DataFrame, conn_dtm, dest_table: str):
+    """
+    Insert cleaned DataFrame into SQL Server using pyodbc and executemany.
+    """
+    df = clean_dataframe(df)
+    columns = list(df.columns)
+    placeholders = ", ".join(["?"] * len(columns))
+    insert_stmt = f"INSERT INTO {dest_table} ({', '.join(columns)}) VALUES ({placeholders})"
+
+    cursor = conn_dtm.cursor()
     try:
-        sql_truncate = """TRUNCATE TABLE %s""" % (fact)
-        df_dtm.columns = [col.lower() for col in df_dtm.columns.to_list()]
-        tuples = [tuple(None if str(cell).lower() in ["", "nan"] else cell for cell in x) for rx in df_dtm.to_numpy()]
-        cols = ','.join(list(df_dtm.columns))
-        query = "INSERT INTO %s(%s) VALUES %%s" % (fact, cols)
-
-        cur_dtm = conn_dtm.cursor()
-        cur_dtm.execute(sql_truncate)
-
-        extras.execute_values(cur_dtm, query, tuples)
+        cursor.fast_executemany = True
+        cursor.executemany(insert_stmt, df.values.tolist())
         conn_dtm.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print("Error: %s" % error)
-        conn_dtm.rollback()
-        cur_dtm.close()
-        return 1
-    print("Insert DTM" + fact + "success")
-    cur_dtm.close()
+        print(f"Inserted into {dest_table} successfully.")
+    except Exception as e:
+        print(f"Error inserting into {dest_table}: {e}")
+    finally:
+        cursor.close()
 
 
-def process_dtm_fact(conn_ods, conn_dtm):
-    f_fact = 'f_HO25_price'
-    sql_ods = """
-  select
-  a.date_id,
-  a.contract_id,
-  a.prev_contract_id,
-  a.last,
-  a.prev_last,
-  a.spread,
-  a.ma_200,
-  a.ma_50,
-  a.mo,
-  a.change,
-  a.prev_open,
-  a.high,
-  a.low,
-  a.prev,
-  a.volume,
-  a.oi,
-  a.date_oi_id,
-  lag(b.last,'0'::interger) OVER (PARTITION BY b.date_id ORDER BY b.mo) AS ld_last_ly
+def process_table(src_table: str, dest_table: str, conn_ods, conn_dtm):
+    """
+    Extract data from src_table in ODS, clean it, and load into dest_table in DTM.
+    """
+    try:
+        print(f"Processing {src_table} → {dest_table}...")
+        df = pd.read_sql(f"SELECT * FROM {src_table}", conn_ods)
+        if df.empty:
+            print(f"Source table {src_table} is empty. Skipping.")
+            return
+        insert_to_fact_table(df, conn_dtm, dest_table)
+    except Exception as e:
+        print(f"Error processing {src_table}: {e}")
+
+
+def main():
+    # Initialize connections
+    conn_ods, conn_dtm = init_db_connections()
+
+    # List of contracts to process
+    contracts = [
+        "HON25", "HOQ25", "HOU25", "HOV25", "HOX25", "HOZ25",
+        "LFN25", "LFQ25", "LFU25", "LFV25", "LFX25", "LFZ25"
+    ]
+
+    for contract in contracts:
+        src_table = f"[ods_barchart_{contract}_uco_price]"
+        dest_table = f"[f_barchart_{contract}_uco_price]"
+        process_table(src_table, dest_table, conn_ods, conn_dtm)
+
+    conn_ods.close()
+    conn_dtm.close()
+    print("ETL process completed.")
+
+
+if __name__ == "__main__":
+    main()
