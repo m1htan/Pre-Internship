@@ -1,7 +1,7 @@
 import pyodbc
 
 # --- THÔNG TIN KẾT NỐI ---
-SERVER = '192.168.98.139'
+SERVER = '100.67.72.105'
 DATABASE = 'TLC'
 USERNAME = 'sa'
 PASSWORD = 'Minhtan0410@'
