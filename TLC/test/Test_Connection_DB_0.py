@@ -1,7 +1,7 @@
 import pyodbc
 
 # --- THÔNG TIN KẾT NỐI ---
-SERVER = 'localhost'
+SERVER = '192.168.98.139'
 DATABASE = 'TLC'
 USERNAME = 'sa'
 PASSWORD = 'Minhtan0410@'
@@ -9,15 +9,19 @@ PASSWORD = 'Minhtan0410@'
 # Driver ODBC đã cài đặt
 # Windows: '{ODBC Driver 17 for SQL Server}' hoặc '{ODBC Driver 18 for SQL Server}'
 # macOS/Linux: '{ODBC Driver 17 for SQL Server}' (hoặc phiên bản khác bạn đã cài)
+
 DRIVER = '{ODBC Driver 17 for SQL Server}'
 
 # Chuỗi kết nối
 CONNECTION_STRING = (
     f'DRIVER={DRIVER};'
-    f'SERVER={SERVER};'
+    f'SERVER={SERVER},1433;'
     f'DATABASE={DATABASE};'
     f'UID={USERNAME};'
-    f'PWD={PASSWORD}'
+    f'PWD={PASSWORD};'
+    f'Encrypt=no;'
+    f'TrustServerCertificate=yes;'
+    f'Connection Timeout=5;'
 )
 
 try:
