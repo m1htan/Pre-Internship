@@ -140,7 +140,7 @@ def contracts_match(df_old, df_new):
 
 COL_MAPPING = {
     'tradeTime':      'timing',
-    'openPrice':      'prev_open',
+    'openPrice':      'open',
     'highPrice':      'high',
     'lowPrice':       'low',
     'lastPrice':      'last',
@@ -172,7 +172,7 @@ def normalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         )
 
     for col in ['price_change', 'percent_change',
-                'prev_open', 'high', 'low', 'last', 'volume', 'oi']:
+                'open', 'high', 'low', 'last', 'volume', 'oi']:
         if col in df.columns:
             df[col] = clean_numeric(df[col])
 
@@ -182,8 +182,8 @@ def insert_dataframe_to_temp(df, conn, temp_name):
     table = f"{temp_name}"
     cols = list(df.columns)
 
-    col_list = ','.join(f'[{c}]' for c in cols)  # [timing],[prev_open],...
-    placeholders = ','.join(['?'] * len(cols))  # ?,?,?,?,?,...
+    col_list = ','.join(f'[{c}]' for c in cols)
+    placeholders = ','.join(['?'] * len(cols))
     insert_sql = f"INSERT INTO {table} ({col_list}) VALUES ({placeholders})"
 
     tuples = [tuple(None if pd.isna(x) else x for x in row) for row in df.to_numpy()]
@@ -215,15 +215,15 @@ def insert_new_records(conn, table_name, temp_name):
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     insert_cols = (
-        "timing, contract, prev_open, high, low, last, price_change, "
+        "timing, contract, open, high, low, last, price_change, "
         "percent_change, volume, oi, raw, source_table, created_date, "
-        "snapshot_date, snapshot_date_ol"
+        "snapshot_date, snapshot_date_oi"
     )
 
     query = f"""
         INSERT INTO {table_name} ({insert_cols})
         SELECT
-            timing, contract, prev_open, high, low, last, price_change,
+            timing, contract, open, high, low, last, price_change,
             percent_change, volume, oi, raw,
             '{temp_name}', '{now}',
             CAST(timing AS DATE),
@@ -387,6 +387,7 @@ def checking_logs(conn_stg, script_name, source_name, table_name, source_row, ta
     except Exception as e:
         print(f"[ERROR] Ghi log thất bại: {e}")
         conn_stg.rollback()
+
 
 
 # Main
