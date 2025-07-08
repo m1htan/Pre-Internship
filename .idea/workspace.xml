@@ -7,7 +7,10 @@
     <list default="true" id="63db39ee-612f-4343-a95e-8442eeee86be" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/TLC/config_sql_server/config_sql_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/TLC/config_sql_server/config_sql_server.py" afterDir="false" />
+=======
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/TLC/script/dtm/f_barchart_HO25_uco_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/TLC/script/dtm/f_barchart_HO25_uco_price.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TLC/test/Test_Connection_DB_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/TLC/test/Test_Connection_DB_1.py" afterDir="false" />
 =======
