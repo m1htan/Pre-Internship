@@ -1,0 +1,406 @@
+-----------------------------------------------
+
+--Created d_date
+IF OBJECT_ID('dbo.d_date', 'U') IS NOT NULL DROP TABLE dbo.d_date;
+GO
+
+CREATE TABLE dbo.d_date (
+    date_id INT PRIMARY KEY,              -- YYYYMMDD
+    date_actual DATE,
+    crops VARCHAR(255),
+    epoch BIGINT,
+    day_suffix VARCHAR(4),
+    day_name VARCHAR(9),
+    day_of_week INT,
+    day_of_month INT,
+    day_of_quarter INT,
+    day_of_year INT,
+    week_of_month INT,
+    week_of_year INT,
+    week_of_year_iso CHAR(10),
+    month_actual INT,
+    month_name VARCHAR(9),
+    month_name_abbreviated CHAR(3),
+    quarter_actual INT,
+    quarter_name VARCHAR(9),
+    year_actual INT,
+    first_day_of_week DATE,
+    last_day_of_week DATE
+);
+Go
+
+--d_contract
+IF OBJECT_ID('dbo.d_contract', 'U') IS NOT NULL DROP TABLE dbo.d_contract;
+GO
+
+CREATE TABLE dbo.d_contract (
+    contract_id INT PRIMARY KEY,
+    contract_code VARCHAR(50) NOT NULL,
+    contract_name VARCHAR(255),
+    created_date DATETIME,
+    eff_dt INT,
+    exp_dt INT,
+    mo_ship VARCHAR(10),
+    year_ship VARCHAR(10)
+);
+GO
+
+-- Bảng f_barchart_HON25_uco_price
+IF OBJECT_ID('dbo.f_barchart_HON25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_HON25_uco_price;
+
+CREATE TABLE dbo.f_barchart_HON25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_HOQ25_uco_price
+IF OBJECT_ID('dbo.f_barchart_HOQ25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_HOQ25_uco_price;
+
+CREATE TABLE dbo.f_barchart_HOQ25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_HOU25_uco_price
+IF OBJECT_ID('dbo.f_barchart_HOU25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_HOU25_uco_price;
+
+CREATE TABLE dbo.f_barchart_HOU25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_HOV25_uco_price
+IF OBJECT_ID('dbo.f_barchart_HOV25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_HOV25_uco_price;
+
+CREATE TABLE dbo.f_barchart_HOV25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_HOX25_uco_price
+IF OBJECT_ID('dbo.f_barchart_HOX25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_HOX25_uco_price;
+
+CREATE TABLE dbo.f_barchart_HOX25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_HOZ25_uco_price
+IF OBJECT_ID('dbo.f_barchart_HOZ25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_HOZ25_uco_price;
+
+CREATE TABLE dbo.f_barchart_HOZ25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_LFN25_uco_price
+IF OBJECT_ID('dbo.f_barchart_LFN25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_LFN25_uco_price;
+
+CREATE TABLE dbo.f_barchart_LFN25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_LFQ25_uco_price
+IF OBJECT_ID('dbo.f_barchart_LFQ25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_LFQ25_uco_price;
+
+CREATE TABLE dbo.f_barchart_LFQ25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_LFU25_uco_price
+IF OBJECT_ID('dbo.f_barchart_LFU25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_LFU25_uco_price;
+
+CREATE TABLE dbo.f_barchart_LFU25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_LFV25_uco_price
+IF OBJECT_ID('dbo.f_barchart_LFV25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_LFV25_uco_price;
+
+CREATE TABLE dbo.f_barchart_LFV25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_LFX25_uco_price
+IF OBJECT_ID('dbo.f_barchart_LFX25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_LFX25_uco_price;
+
+CREATE TABLE dbo.f_barchart_LFX25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);
+
+-- Bảng f_barchart_LFZ25_uco_price
+IF OBJECT_ID('dbo.f_barchart_LFZ25_uco_price', 'U') IS NOT NULL
+    DROP TABLE dbo.f_barchart_LFZ25_uco_price;
+
+CREATE TABLE dbo.f_barchart_LFZ25_uco_price (
+    contract_id INT,
+    prev_contract_id INT,
+    prev_open FLOAT,
+    mo VARCHAR(50),
+    last FLOAT,
+    prev_last FLOAT NULL,
+    change FLOAT,
+    high FLOAT,
+    low FLOAT,
+    volume BIGINT,
+    oi BIGINT,
+    spread FLOAT,
+    ma_200 FLOAT,
+    ma_50 FLOAT,
+    date_id INT,
+    contract_date_id INT,
+    lbd DATE,
+    contract_date DATETIME,
+    contract_date_fmt VARCHAR(50),
+    FOREIGN KEY (contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (prev_contract_id) REFERENCES d_contract(contract_id),
+    FOREIGN KEY (date_id) REFERENCES d_date(date_id),
+    FOREIGN KEY (contract_date_id) REFERENCES d_date(date_id)
+);

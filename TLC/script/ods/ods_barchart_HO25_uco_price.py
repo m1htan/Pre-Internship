@@ -70,17 +70,17 @@ def process_ods_table(stg_table, ods_table, conn_stg, conn_ods):
         CAST(last AS NUMERIC) -
         CAST(LAG(last) OVER (ORDER BY snapshot_date) AS NUMERIC), 2
     ) AS spread,
-    AVG(CAST(last AS FLOAT)) OVER (
+    ROUND(AVG(CAST(last AS FLOAT)) OVER (
         ORDER BY snapshot_date
         ROWS BETWEEN 199 PRECEDING AND CURRENT ROW
-    ) AS ma_200,
-    AVG(CAST(last AS FLOAT)) OVER (
+    ),4) AS ma_200,
+    ROUND(AVG(CAST(last AS FLOAT)) OVER (
         ORDER BY snapshot_date
         ROWS BETWEEN 49 PRECEDING AND CURRENT ROW
-    ) AS ma_50,
+    ),4) AS ma_50,
     timing,
     MONTH(snapshot_date) AS mo,
-    price_change AS change,
+    ROUND(price_change,4) AS change,
     [open] AS prev_open,
     high,
     low,
