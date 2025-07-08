@@ -362,7 +362,7 @@ def insert_replication(csv_path, table_admin_da_name, source_path, conn_dtm):
 def checking_logs(conn_stg, script_name, source_name, table_name, source_row, target_row, duration, date_time):
     sql = """
         INSERT INTO stg_checking_logs (
-            script, 
+            code_build_database, 
             source_name, 
             target_name, 
             source_row, 
@@ -391,11 +391,12 @@ def checking_logs(conn_stg, script_name, source_name, table_name, source_row, ta
         print(f"[ERROR] Ghi log thất bại: {e}")
         conn_stg.rollback()
 
+
 # Main
 if __name__ == '__main__':
     conn_stg, conn_dtm = init_db()
-    table_name = 'stg_barchart_HOQ25_uco_price'
-    script_name = 'stg_barchart_HOQ25_uco_price.py'
+    table_name = 'stg_barchart_LFQ25_uco_price'
+    script_name = 'stg_barchart_LFQ25_uco_price.py'
     table_admin_da_name = 'barchart_daily_idn'
 
     start = datetime.now()
