@@ -441,3 +441,4 @@ BEGIN
     SET @current_date = DATEADD(DAY, 1, @current_date);
 END;
 GO
+
