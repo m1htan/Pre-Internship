@@ -1,0 +1,86 @@
+-- Tạo Partition Function chia theo snapshot_date (theo tháng)
+IF EXISTS (SELECT * FROM sys.partition_functions WHERE name = 'pf_snapshot_date_range')
+    DROP PARTITION SCHEME ps_snapshot_date_range;
+IF EXISTS (SELECT * FROM sys.partition_functions WHERE name = 'pf_snapshot_date_range')
+    DROP PARTITION FUNCTION pf_snapshot_date_range;
+GO
+
+CREATE PARTITION FUNCTION pf_snapshot_date_range (DATE)
+AS RANGE LEFT FOR VALUES
+(
+    '2025-01-01', '2025-02-01', '2025-03-01', '2025-04-01', '2025-05-01',
+    '2025-06-01', '2025-07-01', '2025-08-01', '2025-09-01', '2025-10-01',
+    '2025-11-01', '2025-12-01'
+);
+GO
+
+CREATE PARTITION SCHEME ps_snapshot_date_range
+AS PARTITION pf_snapshot_date_range
+ALL TO ([PRIMARY]);
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_CreateAllPartitionedTables
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TableList TABLE (TableName NVARCHAR(128));
+
+    -- Danh sách các bảng cần tạo
+    INSERT INTO @TableList (TableName)
+    VALUES
+        ('stg_barchart_HON25_uco_price'),
+        ('stg_barchart_HOQ25_uco_price'),
+        ('stg_barchart_HOU25_uco_price'),
+        ('stg_barchart_HOV25_uco_price'),
+        ('stg_barchart_HOX25_uco_price'),
+        ('stg_barchart_HOZ25_uco_price'),
+        ('stg_barchart_LFN25_uco_price'),
+        ('stg_barchart_LFQ25_uco_price'),
+        ('stg_barchart_LFU25_uco_price'),
+        ('stg_barchart_LFV25_uco_price'),
+        ('stg_barchart_LFX25_uco_price'),
+        ('stg_barchart_LFZ25_uco_price');
+
+    DECLARE @TableName NVARCHAR(128), @sql NVARCHAR(MAX);
+
+    DECLARE table_cursor CURSOR FOR
+        SELECT TableName FROM @TableList;
+
+    OPEN table_cursor;
+    FETCH NEXT FROM table_cursor INTO @TableName;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        SET @sql = '
+        IF OBJECT_ID(''dbo.' + @TableName + ''', ''U'') IS NOT NULL
+            DROP TABLE dbo.' + @TableName + ';
+
+        CREATE TABLE dbo.' + @TableName + ' (
+            timing            DATETIME        NOT NULL,
+            contract          VARCHAR(10)     NULL,
+            [open]            FLOAT           NULL,
+            high              FLOAT           NULL,
+            low               FLOAT           NULL,
+            last              FLOAT           NULL,
+            price_change      FLOAT           NULL,
+            percent_change    FLOAT           NULL,
+            volume            BIGINT          NULL,
+            oi                BIGINT          NULL,
+            raw               NVARCHAR(MAX)   NULL,
+            source_table      NVARCHAR(100)   NOT NULL,
+            created_date      DATETIME        NOT NULL,
+            snapshot_date     DATE            NOT NULL,
+            snapshot_date_oi  DATE            NOT NULL
+        ) ON ps_snapshot_date_range(snapshot_date);';
+
+        EXEC sp_executesql @sql;
+
+        FETCH NEXT FROM table_cursor INTO @TableName;
+    END
+
+    CLOSE table_cursor;
+    DEALLOCATE table_cursor;
+END;
+GO
+EXEC dbo.sp_CreateAllPartitionedTables;
