@@ -72,7 +72,7 @@ def get_expected_contract(table_name: str) -> str:
         raise ValueError(f"Không parse được contract từ {table_name}")
     return m.group(1)
 
-## Hàm chính xử lý dữ liệu ✅
+## Hàm chính xử lý dữ liệu
 def insert_into_staging(source_path, temp_name, table_name, conn_stg, table_admin_da_name, conn_dtm):
     expected_contract = table_name.split('_')[2]
     source_row = 0
@@ -182,9 +182,12 @@ def insert_dataframe_to_temp(df, conn, temp_name):
     table = f"{temp_name}"
     cols = list(df.columns)
 
-    col_list = ','.join(f'[{c}]' for c in cols)
+    col_list = ', '.join(f'[{col}]' for col in cols)
+
     placeholders = ','.join(['?'] * len(cols))
+
     insert_sql = f"INSERT INTO {table} ({col_list}) VALUES ({placeholders})"
+    print("[DEBUG] SQL:", insert_sql)
 
     tuples = [tuple(None if pd.isna(x) else x for x in row) for row in df.to_numpy()]
 
@@ -215,15 +218,15 @@ def insert_new_records(conn, table_name, temp_name):
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     insert_cols = (
-        "timing, contract, open, high, low, last, price_change, "
-        "percent_change, volume, oi, raw, source_table, created_date, "
-        "snapshot_date, snapshot_date_oi"
+        "[timing], [contract], [open], [high], [low], [last], [price_change], "
+        "[percent_change], [volume], [oi], [raw], [source_table], [created_date], "
+        "[snapshot_date], [snapshot_date_oi]"
     )
 
     query = f"""
         INSERT INTO {table_name} ({insert_cols})
         SELECT
-            timing, contract, open, high, low, last, price_change,
+            timing, contract, [open], high, low, last, price_change,
             percent_change, volume, oi, raw,
             '{temp_name}', '{now}',
             CAST(timing AS DATE),
@@ -387,7 +390,6 @@ def checking_logs(conn_stg, script_name, source_name, table_name, source_row, ta
     except Exception as e:
         print(f"[ERROR] Ghi log thất bại: {e}")
         conn_stg.rollback()
-
 
 
 # Main
