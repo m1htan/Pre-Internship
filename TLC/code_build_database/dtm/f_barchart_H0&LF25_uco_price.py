@@ -9,13 +9,11 @@ from TLC.config_sql_server.config_sql_server import config_sql_server_ods
 DATE_FORMAT = '%Y-%m-%d'
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-# Khởi tạo kết nối DB SQL Server
 def init_db():
     conn_dtm = config_sql_server(section='sqlserver_dtm')
     conn_ods = config_sql_server_ods(section='sqlserver_ods')
     return conn_dtm, conn_ods
 
-# Hàm insert dữ liệu vào bảng FACT
 def process_insert_dtm_fact(fact, df_dtm, conn_dtm):
     try:
         cursor = conn_dtm.cursor()
@@ -49,8 +47,7 @@ def process_insert_dtm_fact(fact, df_dtm, conn_dtm):
     finally:
         cursor.close()
 
-# Hàm xử lý ETL cho từng bảng
-def process_dtm_fact(ods_table, fact_table, conn_ods, conn_dtm):
+def extract_from_ods_table(ods_table, conn_ods):
     sql_ods = f"""
     SELECT
         a.contract_id,
@@ -77,43 +74,66 @@ def process_dtm_fact(ods_table, fact_table, conn_ods, conn_dtm):
     LEFT JOIN ods_date c ON a.date_id = c.date_id
     """
     try:
-        df_dtm = pd.read_sql_query(sql_ods, conn_ods)
+        df = pd.read_sql_query(sql_ods, conn_ods)
+        if df.empty:
+            print(f"[{ods_table}] → No data.")
+        else:
+            df['source_table'] = ods_table  # Ghi lại nguồn
+        return df
     except Exception as e:
         print(f"Error reading from {ods_table}: {e}")
-        return
+        return pd.DataFrame()
 
-    if df_dtm.empty:
-        print(f"No data retrieved from {ods_table}.")
-        return
-
-    print(f"\nSample from {ods_table}:", df_dtm.head().to_dict(orient='records'))
-    print("Data types:", df_dtm.dtypes.to_dict())
-    process_insert_dtm_fact(fact_table, df_dtm, conn_dtm)
-
-# Main function
 def main():
     conn_dtm, conn_ods = init_db()
 
     ods_tables = [
-        'ods_barchart_HON25_uco_price', 'ods_barchart_HOQ25_uco_price',
-        'ods_barchart_HOU25_uco_price', 'ods_barchart_HOV25_uco_price',
-        'ods_barchart_HOX25_uco_price', 'ods_barchart_HOZ25_uco_price',
-        'ods_barchart_LFN25_uco_price', 'ods_barchart_LFQ25_uco_price',
+        'ods_barchart_HOQ25_uco_price', 'ods_barchart_HOU25_uco_price',
+        'ods_barchart_HOV25_uco_price', 'ods_barchart_HOX25_uco_price',
+        'ods_barchart_HOZ25_uco_price', 'ods_barchart_LFQ25_uco_price',
         'ods_barchart_LFU25_uco_price', 'ods_barchart_LFV25_uco_price',
-        'ods_barchart_LFX25_uco_price', 'ods_barchart_LFZ25_uco_price'
+        'ods_barchart_LFX25_uco_price', 'ods_barchart_LFZ25_uco_price',
+        'ods_barchart_HOF26_uco_price', 'ods_barchart_HOG26_uco_price',
+        'ods_barchart_HOH26_uco_price', 'ods_barchart_HOJ26_uco_price',
+        'ods_barchart_HOK26_uco_price', 'ods_barchart_HON26_uco_price',
+        'ods_barchart_HOM26_uco_price', 'ods_barchart_HOQ26_uco_price',
+        'ods_barchart_HOU26_uco_price', 'ods_barchart_HOV26_uco_price',
+        'ods_barchart_HOX26_uco_price', 'ods_barchart_HOZ26_uco_price',
+        'ods_barchart_LFF26_uco_price', 'ods_barchart_LFG26_uco_price',
+        'ods_barchart_LFH26_uco_price', 'ods_barchart_LFJ26_uco_price',
+        'ods_barchart_LFK26_uco_price', 'ods_barchart_LFN26_uco_price',
+        'ods_barchart_LFM26_uco_price', 'ods_barchart_LFQ26_uco_price',
+        'ods_barchart_LFU26_uco_price', 'ods_barchart_LFV26_uco_price',
+        'ods_barchart_LFX26_uco_price', 'ods_barchart_LFZ26_uco_price'
     ]
 
+    df_ho_all = pd.DataFrame()
+    df_lf_all = pd.DataFrame()
+
     for ods_table in ods_tables:
-        fact_table = ods_table.replace('ods_', 'f_')
-        print(f"\n--- Processing {ods_table} → {fact_table} ---")
-        try:
-            process_dtm_fact(ods_table, fact_table, conn_ods, conn_dtm)
-        except Exception as e:
-            print(f"Error processing {ods_table}: {e}")
+        print(f"Reading from {ods_table}...")
+        df = extract_from_ods_table(ods_table, conn_ods)
+        if df.empty:
+            continue
+        if '_HO' in ods_table:
+            df_ho_all = pd.concat([df_ho_all, df], ignore_index=True)
+        elif '_LF' in ods_table:
+            df_lf_all = pd.concat([df_lf_all, df], ignore_index=True)
+
+    # Insert vào bảng gộp
+    if not df_ho_all.empty:
+        process_insert_dtm_fact('f_barchart_HO_uco_price', df_ho_all, conn_dtm)
+    else:
+        print("No HO data to insert.")
+
+    if not df_lf_all.empty:
+        process_insert_dtm_fact('f_barchart_LF_uco_price', df_lf_all, conn_dtm)
+    else:
+        print("No LF data to insert.")
 
     conn_ods.close()
     conn_dtm.close()
-    print("\nETL for all tables completed.")
+    print("\nETL completed: 2 fact tables created → f_barchart_HO_uco_price & f_barchart_LF_uco_price")
 
 if __name__ == '__main__':
     main()
