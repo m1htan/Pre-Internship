@@ -124,9 +124,15 @@ if __name__ == '__main__':
 
     df_contract = fetch_ods_contract(table_name, conn_ods)
 
-    for source_table in ['stg_barchart_HON25_uco_price', 'stg_barchart_HOQ25_uco_price',
-                         'stg_barchart_HOU25_uco_price', 'stg_barchart_HOV25_uco_price',
-                         'stg_barchart_HOX25_uco_price', 'stg_barchart_HOZ25_uco_price']:
+    for source_table in ['stg_barchart_HOQ25_uco_price', 'stg_barchart_HOU25_uco_price',
+        'stg_barchart_HOV25_uco_price', 'stg_barchart_HOX25_uco_price',
+        'stg_barchart_HOZ25_uco_price', 'stg_barchart_HOF26_uco_price',
+        'stg_barchart_HOG26_uco_price',
+        'stg_barchart_HOH26_uco_price', 'stg_barchart_HOJ26_uco_price',
+        'stg_barchart_HOK26_uco_price', 'stg_barchart_HON26_uco_price',
+        'stg_barchart_HOM26_uco_price', 'stg_barchart_HOQ26_uco_price',
+        'stg_barchart_HOU26_uco_price', 'stg_barchart_HOV26_uco_price',
+        'stg_barchart_HOX26_uco_price', 'stg_barchart_HOZ26_uco_price']:
         sql = f'''
         SELECT DISTINCT contract AS contract_code FROM {source_table}
         '''

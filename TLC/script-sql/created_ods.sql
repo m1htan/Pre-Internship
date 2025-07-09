@@ -375,7 +375,7 @@ DECLARE @end_date DATE = '20501231';
 
 WHILE @current_date <= @end_date
 BEGIN
-    DECLARE @date_id INT = CAST(CONVERT(VARCHAR(😎, @current_date, 112) AS INT);
+    DECLARE @date_id INT = CAST(CONVERT(VARCHAR((8), @current_date, 112) AS INT);
     DECLARE @epoch BIGINT = DATEDIFF(SECOND, '19700101', @current_date);
     DECLARE @day INT = DAY(@current_date);
     DECLARE @day_suffix VARCHAR(4);
