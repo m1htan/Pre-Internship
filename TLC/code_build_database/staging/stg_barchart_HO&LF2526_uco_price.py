@@ -1,19 +1,10 @@
 import os
 import re
-import numpy as np
-import pyodbc
 import pandas as pd
 import shutil
 from datetime import *
 import traceback
-from configparser import ConfigParser
-import sys
-import csv
-import requests, zipfile
-from io import StringIO
-from pandas import DataFrame
 import faulthandler
-from dateutil.relativedelta import relativedelta
 from TLC.config_sql_server import config_sql_server
 faulthandler.enable()
 
@@ -45,26 +36,16 @@ def get_meta_data(table_name: str, conn_stg):
 
     return source_name, source_path, temp_name
 
-
 def extract_contract_from_filename(filename: str) -> str:
-    mapping = {
-        'HON25': 'HON25',
-        'HOQ25': 'HOQ25',
-        'HOU25': 'HOU25',
-        'HOV25': 'HOV25',
-        'HOX25': 'HOX25',
-        'HOZ25': 'HOZ25',
-        'LFN25': 'LFN25',
-        'LFQ25': 'LFQ25',
-        'LFU25': 'LFU25',
-        'LFV25': 'LFV25',
-        'LFX25': 'LFX25',
-        'LFZ25': 'LFZ25',
-    }
-    for key, val in mapping.items():
-        if key in filename:
-            return val
-    return None  # hoặc raise Exception nếu không khớp
+    for code in ['HOQ25', 'HOU25', 'HOV25', 'HOX25', 'HOZ25',
+                 'HOF26', 'HOG26', 'HOH26', 'HOJ26', 'HOK26', 'HOM26', 'HON26', 'HOQ26', 'HOU26', 'HOV26', 'HOX26', 'HOZ26',
+                 'LFQ25', 'LFU25', 'LFV25', 'LFX25', 'LFZ25',
+                 'LFF26', 'LFG26', 'LFH26', 'LFJ26', 'LFK26', 'LFM26', 'LFN26', 'LFQ26', 'LFU26', 'LFV26', 'LFX26', 'LFZ26',
+                 ]:
+        if code in filename:
+            return code
+    return None
+
 
 def get_expected_contract(table_name: str) -> str:
     m = re.search(r'_([A-Z]{2}[A-Z]\d{2})_', table_name)
@@ -250,7 +231,7 @@ def move_processed_file(file_path, base_dir):
     name, ext = os.path.splitext(file_name)
     process_dir = os.path.join(base_dir, "process")
     os.makedirs(process_dir, exist_ok=True)
-    new_path = os.path.join(process_dir, f"{name}_{datetime.now().strftime('%Y%m%d')}{ext}")
+    new_path = os.path.join(process_dir, f"{name}")
     shutil.move(file_path, new_path)
 
 
@@ -362,7 +343,7 @@ def insert_replication(csv_path, table_admin_da_name, source_path, conn_dtm):
 def checking_logs(conn_stg, script_name, source_name, table_name, source_row, target_row, duration, date_time):
     sql = """
         INSERT INTO stg_checking_logs (
-            code_build_database, 
+            script, 
             source_name, 
             target_name, 
             source_row, 
@@ -386,52 +367,90 @@ def checking_logs(conn_stg, script_name, source_name, table_name, source_row, ta
         with conn_stg.cursor() as cur:
             cur.execute(sql, values)
             conn_stg.commit()
-        print(f"[LOG] Ghi log thành công cho {script_name}")
+        print(f"[LOG] Ghi log thành công cho {table_name}")
     except Exception as e:
         print(f"[ERROR] Ghi log thất bại: {e}")
         conn_stg.rollback()
 
-
-# Main
 if __name__ == '__main__':
     conn_stg, conn_dtm = init_db()
-    table_name = 'stg_barchart_HON25_uco_price'
-    script_name = 'stg_barchart_HON25_uco_price.py'
+
+    table_list = [
+        'stg_barchart_HOQ25_uco_price',
+        'stg_barchart_HOU25_uco_price',
+        'stg_barchart_HOV25_uco_price',
+        'stg_barchart_HOX25_uco_price',
+        'stg_barchart_HOZ25_uco_price',
+
+        'stg_barchart_HOF26_uco_price',
+        'stg_barchart_HOG26_uco_price',
+        'stg_barchart_HOH26_uco_price',
+        'stg_barchart_HOJ26_uco_price',
+        'stg_barchart_HOK26_uco_price',
+        'stg_barchart_HOM26_uco_price',
+        'stg_barchart_HON26_uco_price',
+        'stg_barchart_HOQ26_uco_price',
+        'stg_barchart_HOU26_uco_price',
+        'stg_barchart_HOV26_uco_price',
+        'stg_barchart_HOX26_uco_price',
+        'stg_barchart_HOZ26_uco_price',
+
+        'stg_barchart_LFQ25_uco_price',
+        'stg_barchart_LFU25_uco_price',
+        'stg_barchart_LFV25_uco_price',
+        'stg_barchart_LFX25_uco_price',
+        'stg_barchart_LFZ25_uco_price',
+
+        'stg_barchart_LFF26_uco_price',
+        'stg_barchart_LFG26_uco_price',
+        'stg_barchart_LFH26_uco_price',
+        'stg_barchart_LFJ26_uco_price',
+        'stg_barchart_LFK26_uco_price',
+        'stg_barchart_LFM26_uco_price',
+        'stg_barchart_LFN26_uco_price',
+        'stg_barchart_LFQ26_uco_price',
+        'stg_barchart_LFU26_uco_price',
+        'stg_barchart_LFV26_uco_price',
+        'stg_barchart_LFX26_uco_price',
+        'stg_barchart_LFZ26_uco_price',
+    ]
     table_admin_da_name = 'barchart_daily_idn'
 
-    start = datetime.now()
-    try:
-        source_name, source_path, temp_name = get_meta_data(table_name, conn_stg)
-        source_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), source_path)
+    for table_name in table_list:
+        start = datetime.now()
+        script_name = 'stg_barchart_HO&LF2526_uco_price.py'
+        try:
+            source_name, source_path, temp_name = get_meta_data(table_name, conn_stg)
+            source_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), source_path)
 
-        source_row, target_row = insert_into_staging(
-            source_dir,
-            temp_name,
-            table_name,
+            source_row, target_row = insert_into_staging(
+                source_dir,
+                temp_name,
+                table_name,
+                conn_stg,
+                table_admin_da_name,
+                conn_dtm
+            )
+        except Exception as e:
+            print(f"[ERROR] Lỗi khi xử lý {table_name}: {e}")
+            source_row, target_row = 0, 0
+            source_name = ''
+
+        end = datetime.now()
+        duration = (end - start).total_seconds()
+        date_time = end.strftime("%Y-%m-%d %H:%M:%S")
+
+        # Ghi log cho mỗi bảng
+        checking_logs(
             conn_stg,
-            table_admin_da_name,
-            conn_dtm
+            script_name,
+            source_name,
+            table_name,
+            source_row,
+            target_row,
+            duration,
+            date_time
         )
-    except Exception as e:
-        print(f"Lỗi khi lấy metadata hoặc insert dữ liệu: {e}")
-        source_row, target_row = 0, 0
-
-    end = datetime.now()
-
-    duration = end - start
-    date_time = (datetime.now()).strftime("%Y-%m-%d %H:%M:%S")
-
-    checking_logs(
-        conn_stg,
-        script_name,
-        source_name,
-        table_name,
-        source_row,
-        target_row,
-        duration.total_seconds(),
-        date_time
-    )
-
     conn_stg.close()
     conn_dtm.close()
 
