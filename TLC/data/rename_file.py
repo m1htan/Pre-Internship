@@ -16,7 +16,7 @@ folder_path = "/Users/minhtan/Documents/GitHub/Pre-Internship/TLC/data/raw_data"
 
 def rename_files():
     for contract in contracts:
-        old_name = f"{contract}.csv"
+        old_name = f"barchart_loadms_{contract}"
         new_name = f"barchart_loadms_{contract}.csv"
 
         old_path = os.path.join(folder_path, old_name)

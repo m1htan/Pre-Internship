@@ -43,3 +43,6 @@ VALUES
 ('exchange', 'usda', 'barchart_loadms_LFX26.csv', '/Users/minhtan/Documents/GitHub/Pre-Internship/TLC/data/raw_data', '.csv', 'stg_tmp_barchart_LFX26_uco_price_temp', 'stg_barchart_LFX26_uco_price', GETDATE(), GETDATE(), 'minhtan'),
 ('exchange', 'usda', 'barchart_loadms_LFZ26.csv', '/Users/minhtan/Documents/GitHub/Pre-Internship/TLC/data/raw_data', '.csv', 'stg_tmp_barchart_LFZ26_uco_price_temp', 'stg_barchart_LFZ26_uco_price', GETDATE(), GETDATE(), 'minhtan');
 
+-- ================= Merge Contracts =================
+('exchange', 'usda', 'barchart_loadms_LF.csv', '/Users/minhtan/Documents/GitHub/Pre-Internship/TLC/data/raw_data', '.csv', 'stg_tmp_barchart_LFZ26_uco_price_temp', 'stg_barchart_LFZ26_uco_price', GETDATE(), GETDATE(), 'minhtan');
+('exchange', 'usda', 'barchart_loadms_HO.csv', '/Users/minhtan/Documents/GitHub/Pre-Internship/TLC/data/raw_data', '.csv', 'stg_tmp_barchart_LFZ26_uco_price_temp', 'stg_barchart_LFZ26_uco_price', GETDATE(), GETDATE(), 'minhtan');
