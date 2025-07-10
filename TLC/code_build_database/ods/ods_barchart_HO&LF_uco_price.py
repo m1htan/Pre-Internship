@@ -87,9 +87,9 @@ def process_ods_table(stg_table, ods_table, conn_stg, conn_ods):
     # Map IDs and derived columns
     df['contract_id'] = df['contract_code'].map(contract_map)
     df['date_id'] = df['date_actual'].map(date_map)
-    df['contract_date_id'] = df['date_actual_oi'].map(date_map)
     df['lbd'] = df['contract_code'].map(lbd_map)
     df['contract_date'] = pd.to_datetime(df['lbd'], errors='coerce')
+    df['contract_date_id'] = df['contract_date'].map(date_map)
     df['contract_date_fmt'] = df['contract_date'].dt.strftime('%y %b')
 
     selected_columns = [
