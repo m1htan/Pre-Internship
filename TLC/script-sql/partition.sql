@@ -70,23 +70,7 @@ BEGIN
     DECLARE @TableList TABLE (TableName NVARCHAR(128));
     INSERT INTO @TableList (TableName)
     VALUES
-        ('stg_barchart_HOQ25_uco_price'), ('stg_barchart_HOU25_uco_price'),
-        ('stg_barchart_HOV25_uco_price'), ('stg_barchart_HOX25_uco_price'),
-        ('stg_barchart_HOZ25_uco_price'), ('stg_barchart_LFQ25_uco_price'),
-        ('stg_barchart_LFU25_uco_price'), ('stg_barchart_LFV25_uco_price'),
-        ('stg_barchart_LFX25_uco_price'), ('stg_barchart_LFZ25_uco_price'),
-        ('stg_barchart_HOF26_uco_price'), ('stg_barchart_HOG26_uco_price'),
-        ('stg_barchart_HOH26_uco_price'), ('stg_barchart_HOJ26_uco_price'),
-        ('stg_barchart_HOK26_uco_price'), ('stg_barchart_HON26_uco_price'),
-        ('stg_barchart_HOM26_uco_price'), ('stg_barchart_HOQ26_uco_price'),
-        ('stg_barchart_HOU26_uco_price'), ('stg_barchart_HOV26_uco_price'),
-        ('stg_barchart_HOX26_uco_price'), ('stg_barchart_HOZ26_uco_price'),
-        ('stg_barchart_LFF26_uco_price'), ('stg_barchart_LFG26_uco_price'),
-        ('stg_barchart_LFH26_uco_price'), ('stg_barchart_LFJ26_uco_price'),
-        ('stg_barchart_LFK26_uco_price'), ('stg_barchart_LFN26_uco_price'),
-        ('stg_barchart_LFM26_uco_price'), ('stg_barchart_LFQ26_uco_price'),
-        ('stg_barchart_LFU26_uco_price'), ('stg_barchart_LFV26_uco_price'),
-        ('stg_barchart_LFX26_uco_price'), ('stg_barchart_LFZ26_uco_price');
+        ('stg_barchart_HO_uco_price'), ('stg_barchart_LF_uco_price');
 
     -- 5. Tạo bảng mới
     DECLARE table_cursor CURSOR FOR SELECT TableName FROM @TableList;
