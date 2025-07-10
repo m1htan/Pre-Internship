@@ -25,7 +25,7 @@ def process_insert_dtm_fact(fact, df_dtm, conn_dtm):
         df_dtm.replace([np.inf, -np.inf], np.nan, inplace=True)
         df_dtm = df_dtm.where(pd.notnull(df_dtm), None)
 
-        float_columns = ['prev_open', 'last', 'prev_last', 'change', 'high', 'low',
+        float_columns = ['open', 'last', 'prev_last', 'change', 'high', 'low',
                          'volume', 'oi', 'spread', 'ma_200', 'ma_50']
 
         for col in float_columns:
@@ -51,8 +51,7 @@ def extract_from_ods_table(ods_table, conn_ods):
     sql_ods = f"""
     SELECT
         a.contract_id,
-        a.prev_contract_id,
-        a.prev_open,
+        a.open,
         a.mo,
         a.last,
         LAG(a.last) OVER (ORDER BY c.date_actual) AS prev_last,
@@ -88,23 +87,7 @@ def main():
     conn_dtm, conn_ods = init_db()
 
     ods_tables = [
-        'ods_barchart_HOQ25_uco_price', 'ods_barchart_HOU25_uco_price',
-        'ods_barchart_HOV25_uco_price', 'ods_barchart_HOX25_uco_price',
-        'ods_barchart_HOZ25_uco_price', 'ods_barchart_LFQ25_uco_price',
-        'ods_barchart_LFU25_uco_price', 'ods_barchart_LFV25_uco_price',
-        'ods_barchart_LFX25_uco_price', 'ods_barchart_LFZ25_uco_price',
-        'ods_barchart_HOF26_uco_price', 'ods_barchart_HOG26_uco_price',
-        'ods_barchart_HOH26_uco_price', 'ods_barchart_HOJ26_uco_price',
-        'ods_barchart_HOK26_uco_price', 'ods_barchart_HON26_uco_price',
-        'ods_barchart_HOM26_uco_price', 'ods_barchart_HOQ26_uco_price',
-        'ods_barchart_HOU26_uco_price', 'ods_barchart_HOV26_uco_price',
-        'ods_barchart_HOX26_uco_price', 'ods_barchart_HOZ26_uco_price',
-        'ods_barchart_LFF26_uco_price', 'ods_barchart_LFG26_uco_price',
-        'ods_barchart_LFH26_uco_price', 'ods_barchart_LFJ26_uco_price',
-        'ods_barchart_LFK26_uco_price', 'ods_barchart_LFN26_uco_price',
-        'ods_barchart_LFM26_uco_price', 'ods_barchart_LFQ26_uco_price',
-        'ods_barchart_LFU26_uco_price', 'ods_barchart_LFV26_uco_price',
-        'ods_barchart_LFX26_uco_price', 'ods_barchart_LFZ26_uco_price'
+        'ods_barchart_HO_uco_price', 'ods_barchart_LF_uco_price'
     ]
 
     df_ho_all = pd.DataFrame()

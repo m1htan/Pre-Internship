@@ -1,5 +1,4 @@
 -----------------------------------------------
-
 --Created d_date
 IF OBJECT_ID('dbo.d_date', 'U') IS NOT NULL DROP TABLE dbo.d_date;
 GO
@@ -36,7 +35,6 @@ GO
 CREATE TABLE dbo.d_contract (
     contract_id INT PRIMARY KEY,
     contract_code VARCHAR(50) NOT NULL,
-    contract_name VARCHAR(255),
     created_date DATETIME,
     eff_dt INT,
     exp_dt INT,
@@ -48,8 +46,7 @@ GO
 --f_HO
 CREATE TABLE f_barchart_HO_uco_price (
     contract_id INT NOT NULL,
-    prev_contract_id INT,
-    prev_open FLOAT,
+    open_price FLOAT,
     mo VARCHAR(10),
     last FLOAT,
     prev_last FLOAT,
@@ -77,8 +74,7 @@ GO
 --f_LF
 CREATE TABLE f_barchart_LF_uco_price (
     contract_id INT NOT NULL,
-    prev_contract_id INT,
-    prev_open FLOAT,
+    open_price FLOAT,
     mo VARCHAR(10),
     last FLOAT,
     prev_last FLOAT,
@@ -102,4 +98,3 @@ CREATE TABLE f_barchart_LF_uco_price (
     CONSTRAINT FK_f_barchart_LF_uco_price_date FOREIGN KEY (date_id) REFERENCES d_date(date_id)
 );
 GO
-
