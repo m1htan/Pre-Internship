@@ -91,7 +91,7 @@ def insert_into_staging(source_path, temp_name, table_name, conn_stg, table_admi
             truncate_temp_table(conn_stg, temp_name)
             insert_dataframe_to_temp(df, conn_stg, temp_name)
             delete_duplicates(conn_stg, table_name, temp_name)
-            insert_new_records(conn_stg, table_name, temp_name)
+            insert_new_records(conn_stg, temp_name)
 
             conn_stg.commit()
 
@@ -195,34 +195,49 @@ def delete_duplicates(conn, table_name, temp_name):
     conn.cursor().execute(query)
 
 
-def insert_new_records(conn, table_name, temp_name):
+def get_target_table_from_contract(contract_code: str) -> str:
+    if contract_code.startswith('HO'):
+        return 'stg_barchart_HO_uco_price'
+    elif contract_code.startswith('LF'):
+        return 'stg_barchart_LF_uco_price'
+    else:
+        raise ValueError(f"[ERROR] Không xác định được bảng đích cho contract: {contract_code}")
+
+
+def insert_new_records(conn, temp_name):
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    cursor = conn.cursor()
 
-    insert_cols = (
-        "[timing], [contract], [open], [high], [low], [last], [price_change], "
-        "[percent_change], [volume], [oi], [raw], [source_table], [created_date], "
-        "[snapshot_date], [snapshot_date_oi]"
-    )
+    # Lấy danh sách các mã hợp đồng trong bảng tạm
+    contracts = pd.read_sql(f"SELECT DISTINCT contract FROM {temp_name}", conn)['contract'].tolist()
 
-    query = f"""
-        INSERT INTO {table_name} ({insert_cols})
-        SELECT
-            timing, contract, [open], high, low, last, price_change,
-            percent_change, volume, oi, raw,
-            '{temp_name}', '{now}',
-            CAST(timing AS DATE),
-            CASE WHEN DATEPART(WEEKDAY, CAST(timing AS DATE)) = 2
-                 THEN DATEADD(DAY, 3, CAST(timing AS DATE))
-                 ELSE DATEADD(DAY, 1, CAST(timing AS DATE))
-            END
-        FROM {temp_name} A
-        WHERE NOT EXISTS (
-            SELECT 1 FROM {table_name} B
-            WHERE B.contract = A.contract AND B.timing = A.timing
-        );
-    """
-    cur = conn.cursor()
-    cur.execute(query)
+    for contract_code in contracts:
+        target_table = get_target_table_from_contract(contract_code)
+
+        query = f"""
+            INSERT INTO {target_table} (
+                [timing], [contract], [open], [high], [low], [last], [price_change],
+                [percent_change], [volume], [oi], [raw], [source_table], [created_date],
+                [snapshot_date], [snapshot_date_oi]
+            )
+            SELECT 
+                timing, contract, [open], high, low, last, price_change,
+                percent_change, volume, oi, raw,
+                '{temp_name}', '{now}',
+                CAST(timing AS DATE),
+                CASE WHEN DATEPART(WEEKDAY, CAST(timing AS DATE)) = 2
+                     THEN DATEADD(DAY, 3, CAST(timing AS DATE))
+                     ELSE DATEADD(DAY, 1, CAST(timing AS DATE))
+                END
+            FROM {temp_name}
+            WHERE contract = ?
+              AND NOT EXISTS (
+                  SELECT 1 FROM {target_table} 
+                  WHERE contract = {temp_name}.contract AND timing = {temp_name}.timing
+              );
+        """
+
+        cursor.execute(query, [contract_code])
     conn.commit()
 
 
@@ -231,7 +246,7 @@ def move_processed_file(file_path, base_dir):
     name, ext = os.path.splitext(file_name)
     process_dir = os.path.join(base_dir, "process")
     os.makedirs(process_dir, exist_ok=True)
-    new_path = os.path.join(process_dir, f"{name}")
+    new_path = os.path.join(process_dir, f"{name}.csv")
     shutil.move(file_path, new_path)
 
 
@@ -376,53 +391,21 @@ if __name__ == '__main__':
     conn_stg, conn_dtm = init_db()
 
     table_list = [
-        'stg_barchart_HOQ25_uco_price',
-        'stg_barchart_HOU25_uco_price',
-        'stg_barchart_HOV25_uco_price',
-        'stg_barchart_HOX25_uco_price',
-        'stg_barchart_HOZ25_uco_price',
-
-        'stg_barchart_HOF26_uco_price',
-        'stg_barchart_HOG26_uco_price',
-        'stg_barchart_HOH26_uco_price',
-        'stg_barchart_HOJ26_uco_price',
-        'stg_barchart_HOK26_uco_price',
-        'stg_barchart_HOM26_uco_price',
-        'stg_barchart_HON26_uco_price',
-        'stg_barchart_HOQ26_uco_price',
-        'stg_barchart_HOU26_uco_price',
-        'stg_barchart_HOV26_uco_price',
-        'stg_barchart_HOX26_uco_price',
-        'stg_barchart_HOZ26_uco_price',
-
-        'stg_barchart_LFQ25_uco_price',
-        'stg_barchart_LFU25_uco_price',
-        'stg_barchart_LFV25_uco_price',
-        'stg_barchart_LFX25_uco_price',
-        'stg_barchart_LFZ25_uco_price',
-
-        'stg_barchart_LFF26_uco_price',
-        'stg_barchart_LFG26_uco_price',
-        'stg_barchart_LFH26_uco_price',
-        'stg_barchart_LFJ26_uco_price',
-        'stg_barchart_LFK26_uco_price',
-        'stg_barchart_LFM26_uco_price',
-        'stg_barchart_LFN26_uco_price',
-        'stg_barchart_LFQ26_uco_price',
-        'stg_barchart_LFU26_uco_price',
-        'stg_barchart_LFV26_uco_price',
-        'stg_barchart_LFX26_uco_price',
-        'stg_barchart_LFZ26_uco_price',
+        'stg_barchart_HO_uco_price',
+        'stg_barchart_LF_uco_price',
     ]
     table_admin_da_name = 'barchart_daily_idn'
 
-    for table_name in table_list:
+    for table_name in ['stg_barchart_HO_uco_price', 'stg_barchart_LF_uco_price']:
         start = datetime.now()
         script_name = 'stg_barchart_HO&LF2526_uco_price.py'
+        source_row, target_row = 0, 0
         try:
+            # Lấy metadata cho bảng staging chính (HO hoặc LF)
             source_name, source_path, temp_name = get_meta_data(table_name, conn_stg)
             source_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), source_path)
 
+            # Gọi insert xử lý toàn bộ file của HO hoặc LF
             source_row, target_row = insert_into_staging(
                 source_dir,
                 temp_name,
@@ -433,14 +416,12 @@ if __name__ == '__main__':
             )
         except Exception as e:
             print(f"[ERROR] Lỗi khi xử lý {table_name}: {e}")
-            source_row, target_row = 0, 0
             source_name = ''
 
         end = datetime.now()
         duration = (end - start).total_seconds()
         date_time = end.strftime("%Y-%m-%d %H:%M:%S")
 
-        # Ghi log cho mỗi bảng
         checking_logs(
             conn_stg,
             script_name,
@@ -451,6 +432,7 @@ if __name__ == '__main__':
             duration,
             date_time
         )
+
     conn_stg.close()
     conn_dtm.close()
 
