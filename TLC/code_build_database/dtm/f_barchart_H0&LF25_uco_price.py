@@ -25,7 +25,7 @@ def process_insert_dtm_fact(fact, df_dtm, conn_dtm):
         df_dtm.replace([np.inf, -np.inf], np.nan, inplace=True)
         df_dtm = df_dtm.where(pd.notnull(df_dtm), None)
 
-        float_columns = ['open', 'last', 'prev_last', 'change', 'high', 'low',
+        float_columns = ['open_price', 'last', 'prev_last', 'change', 'high', 'low',
                          'volume', 'oi', 'spread', 'ma_200', 'ma_50']
 
         for col in float_columns:
@@ -51,7 +51,7 @@ def extract_from_ods_table(ods_table, conn_ods):
     sql_ods = f"""
     SELECT
         a.contract_id,
-        a.open,
+        a.open_price,
         a.mo,
         a.last,
         LAG(a.last) OVER (ORDER BY c.date_actual) AS prev_last,
