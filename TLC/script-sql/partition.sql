@@ -86,7 +86,7 @@ BEGIN
             [open]            FLOAT           NULL,
             high              FLOAT           NULL,
             low               FLOAT           NULL,
-            last              FLOAT           NULL,
+            [last]            FLOAT           NULL,
             price_change      FLOAT           NULL,
             percent_change    FLOAT           NULL,
             volume            BIGINT          NULL,

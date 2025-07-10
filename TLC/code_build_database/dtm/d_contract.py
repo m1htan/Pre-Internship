@@ -16,27 +16,27 @@ def fetch_ods_contract(conn_ods):
     """
     return pd.read_sql(query, conn_ods)
 
-def truncate_d_contract(conn_dtm):
-    try:
-        with conn_dtm.cursor() as cursor:
-            cursor.execute("TRUNCATE TABLE d_contract")
-            conn_dtm.commit()
-            print("Truncated table d_contract in DTM.")
-    except Exception as e:
-        conn_dtm.rollback()
-        print(f"Error truncating d_contract: {e}")
+def fetch_existing_d_contract(conn_dtm):
+    query = "SELECT contract_id FROM d_contract"
+    return pd.read_sql(query, conn_dtm)
 
 def load_to_d_contract(df, conn_dtm):
+    if df.empty:
+        print("No new rows to insert into d_contract.")
+        return
+
     cursor = conn_dtm.cursor()
     try:
         df.columns = [col.lower() for col in df.columns]
         cols = ','.join(df.columns)
         placeholders = ','.join(['?' for _ in df.columns])
         insert_sql = f"INSERT INTO d_contract ({cols}) VALUES ({placeholders})"
+
         for row in df.itertuples(index=False, name=None):
             cursor.execute(insert_sql, tuple(None if pd.isna(cell) else cell for cell in row))
+
         conn_dtm.commit()
-        print(f"Inserted {len(df)} rows into d_contract.")
+        print(f"Inserted {len(df)} new rows into d_contract.")
     except Exception as e:
         conn_dtm.rollback()
         print(f"Error inserting into d_contract: {e}")
@@ -46,16 +46,21 @@ def load_to_d_contract(df, conn_dtm):
 def main():
     conn_ods, conn_dtm = init_db_connections()
     try:
-        # Extract
-        df_contract = fetch_ods_contract(conn_ods)
-        print(f"Fetched {len(df_contract)} rows from ods_contract.")
+        # Extract from ODS
+        df_ods = fetch_ods_contract(conn_ods)
+        print(f"Fetched {len(df_ods)} rows from ods_contract.")
 
-        # Optional: Transform (e.g., deduplicate)
-        df_contract = df_contract.drop_duplicates(subset=['contract_id'])
+        # Extract from DTM
+        df_dtm = fetch_existing_d_contract(conn_dtm)
+        existing_ids = set(df_dtm['contract_id'].tolist())
 
-        # Load
-        truncate_d_contract(conn_dtm)
-        load_to_d_contract(df_contract, conn_dtm)
+        # Filter: only new contracts
+        df_new = df_ods[~df_ods['contract_id'].isin(existing_ids)]
+
+        print(f"{len(df_new)} new contracts to insert.")
+
+        # Load only new contracts
+        load_to_d_contract(df_new, conn_dtm)
 
     finally:
         conn_ods.close()

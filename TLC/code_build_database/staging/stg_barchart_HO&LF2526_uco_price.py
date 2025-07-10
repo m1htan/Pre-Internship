@@ -38,10 +38,12 @@ def get_meta_data(table_name: str, conn_stg):
 
 def extract_contract_from_filename(filename: str) -> str:
     for code in ['HOQ25', 'HOU25', 'HOV25', 'HOX25', 'HOZ25',
-                 'HOF26', 'HOG26', 'HOH26', 'HOJ26', 'HOK26', 'HOM26', 'HON26', 'HOQ26', 'HOU26', 'HOV26', 'HOX26', 'HOZ26',
-                 'LFQ25', 'LFU25', 'LFV25', 'LFX25', 'LFZ25',
-                 'LFF26', 'LFG26', 'LFH26', 'LFJ26', 'LFK26', 'LFM26', 'LFN26', 'LFQ26', 'LFU26', 'LFV26', 'LFX26', 'LFZ26',
-                 ]:
+                 'HOF26', 'HOG26', 'HOH26', 'HOJ26', 'HOK26',
+                 'HOM26', 'HON26', 'HOQ26', 'HOU26', 'HOV26',
+                 'HOX26', 'HOZ26', 'LFQ25', 'LFU25', 'LFV25',
+                 'LFX25', 'LFZ25', 'LFF26', 'LFG26', 'LFH26',
+                 'LFJ26', 'LFK26', 'LFM26', 'LFN26', 'LFQ26',
+                 'LFU26', 'LFV26', 'LFX26', 'LFZ26' ]:
         if code in filename:
             return code
     return None
