@@ -64,7 +64,7 @@ def extract_from_ods_table(ods_table, conn_ods):
         a.ma_200,
         a.ma_50,
         a.date_id,
-        a.date_id AS contract_date_id,
+        a.contract_date_id,
         a.lbd,
         a.contract_date,
         a.contract_date_fmt
