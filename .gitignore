@@ -36,3 +36,4 @@ coverage/
 *.swp
 
 *.ini
+config_sql_server/config.ini
